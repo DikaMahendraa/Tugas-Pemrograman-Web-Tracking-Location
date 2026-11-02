@@ -1,0 +1,23 @@
+
+# Environment variables (data rahasia)
+.env
+.env.*
+
+# Tetap sertakan template environment
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Editor settings
+.vscode/
+.idea/

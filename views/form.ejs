@@ -1,0 +1,207 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - GeoTrack</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <div class="container">
+
+       
+<header class="app-header">
+    <div class="header-inner">
+        <a href="/" class="brand">
+            GeoTrack<span>.</span>
+        </a>
+
+        <a href="/" class="header-link">
+            ← Dashboard
+        </a>
+    </div>
+</header>
+
+
+        <div class="breadcrumb">
+            <a href="/">Dashboard</a>
+            <span>/</span>
+            <span><%= title %></span>
+        </div>
+
+        <section class="form-panel">
+
+            <div class="form-heading">
+                <div class="form-icon">⌖</div>
+                <div>
+                    <h2><%= title %></h2>
+                    <p>Kelola informasi tempat yang ingin kamu simpan.</p>
+                </div>
+            </div>
+
+            <div class="form-divider"></div>
+
+            <form
+                action="<%= location ? '/update/' + location.id : '/save' %>"
+                method="POST"
+            >
+
+                <div class="form-section">
+                    <h3>Informasi Lokasi</h3>
+                    <p>Berikan identitas agar tempat mudah ditemukan kembali.</p>
+
+                    <div class="field">
+                        <label for="location_name">Nama Lokasi</label>
+                        <input
+                            type="text"
+                            id="location_name"
+                            name="location_name"
+                            placeholder="Contoh: Kampus Undiknas"
+                            value="<%= location ? location.location_name : '' %>"
+                            maxlength="100"
+                            required
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="category">Kategori Lokasi</label>
+                        <select id="category" name="category" required>
+                            <option value="">Pilih kategori lokasi</option>
+
+                            <% const categories = [
+                                'Pendidikan',
+                                'Pribadi',
+                                'Hiburan',
+                                'Kuliner',
+                                'Wisata',
+                                'Pekerjaan',
+                                'Lainnya'
+                            ]; %>
+
+                            <% categories.forEach((item) => { %>
+                                <option
+                                    value="<%= item %>"
+                                    <%= location && location.category === item ? 'selected' : '' %>
+                                >
+                                    <%= item %>
+                                </option>
+                            <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="notes">Catatan <span>(Opsional)</span></label>
+                        <textarea
+                            id="notes"
+                            name="notes"
+                            rows="4"
+                            placeholder="Tambahkan keterangan mengenai tempat ini..."
+                        ><%= location ? location.notes || '' : '' %></textarea>
+                    </div>
+                </div>
+
+                <div class="form-divider"></div>
+
+                <div class="form-section">
+                    <h3>Koordinat Lokasi</h3>
+                    <p>Gunakan lokasi perangkatmu atau masukkan koordinat secara manual.</p>
+
+                    <button type="button" id="getLocation" class="location-button">
+                        ⌖ Ambil Lokasi Saya
+                    </button>
+
+                    <p id="locationMessage" class="location-message"></p>
+
+                    <div class="coordinate-grid">
+                        <div class="field">
+                            <label for="latitude">Latitude</label>
+                            <input
+                                type="number"
+                                step="any"
+                                id="latitude"
+                                name="latitude"
+                                placeholder="-8.6700000"
+                                value="<%= location ? location.latitude : '' %>"
+                                required
+                            >
+                        </div>
+
+                        <div class="field">
+                            <label for="longitude">Longitude</label>
+                            <input
+                                type="number"
+                                step="any"
+                                id="longitude"
+                                name="longitude"
+                                placeholder="115.2200000"
+                                value="<%= location ? location.longitude : '' %>"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <p class="coordinate-info">
+                        Pastikan koordinat yang dimasukkan sesuai dengan lokasi yang ingin disimpan.
+                    </p>
+                </div>
+
+                <div class="form-divider"></div>
+
+                <div class="form-actions">
+                    <a href="/" class="cancel-button">Batal</a>
+
+                    <button type="submit" class="submit-button">
+                        <%= location ? 'Simpan Perubahan' : 'Simpan Lokasi' %>
+                    </button>
+                </div>
+
+            </form>
+        </section>
+
+        <footer class="app-footer">
+            GeoTrack · Personal Location Manager
+        </footer>
+
+    </div>
+
+    <script>
+        document.getElementById('getLocation').addEventListener('click', () => {
+            const message = document.getElementById('locationMessage');
+            const button = document.getElementById('getLocation');
+
+            if (!navigator.geolocation) {
+                message.textContent = 'Browser tidak mendukung fitur lokasi.';
+                return;
+            }
+
+            button.disabled = true;
+            message.textContent = 'Sedang mengambil koordinat...';
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    document.getElementById('latitude').value =
+                        position.coords.latitude;
+
+                    document.getElementById('longitude').value =
+                        position.coords.longitude;
+
+                    message.textContent = 'Koordinat berhasil diambil.';
+                    button.disabled = false;
+                },
+                () => {
+                    message.textContent =
+                        'Gagal mengambil lokasi. Periksa izin browser.';
+                    button.disabled = false;
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000
+                }
+            );
+        });
+    </script>
+
+</body>
+</html>

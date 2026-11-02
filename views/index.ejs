@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoTrack | Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header class="app-header">
+    <div class="header-inner">
+        <a href="/" class="brand">GeoTrack<span>.</span></a>
+        <a href="/new" class="btn-primary">+ Tambah Lokasi</a>
+    </div>
+</header>
+
+<main class="dashboard-container">
+
+    <section class="welcome-section">
+        <div>
+            <p class="eyebrow">PERSONAL LOCATION MANAGER</p>
+            <h1>Dashboard Lokasi</h1>
+            <p class="subtitle">
+                Kelola dan temukan kembali tempat-tempat penting yang kamu simpan.
+            </p>
+        </div>
+    </section>
+
+    <% if (message) { %>
+        <div class="notification"><%= message %></div>
+    <% } %>
+
+    <section class="stats-grid">
+        <div class="stat-card">
+            <span>Total Lokasi</span>
+            <h2><%= totalLocations %></h2>
+            <p>Lokasi tersimpan</p>
+        </div>
+
+        <div class="stat-card">
+            <span>Halaman Aktif</span>
+            <h2><%= currentPage %></h2>
+            <p>Dari <%= totalPages %> halaman</p>
+        </div>
+    </section>
+
+    <section class="table-section">
+
+        <div class="table-heading">
+            <div>
+                <h2>Daftar Lokasi</h2>
+                <p>Data lokasi yang sudah kamu simpan.</p>
+            </div>
+        </div>
+
+        <form action="/" method="GET" class="filter-form">
+            <input
+                type="text"
+                name="search"
+                placeholder="Cari nama lokasi..."
+                value="<%= search %>"
+            >
+
+            <select name="category">
+                <option value="">Semua Kategori</option>
+                <% ['Pendidikan', 'Pribadi', 'Hiburan', 'Kuliner', 'Wisata', 'Pekerjaan', 'Lainnya'].forEach(item => { %>
+                    <option
+                        value="<%= item %>"
+                        <%= category === item ? 'selected' : '' %>
+                    >
+                        <%= item %>
+                    </option>
+                <% }) %>
+            </select>
+
+            <button type="submit" class="btn-primary">Terapkan</button>
+            <a href="/" class="btn-reset">Reset</a>
+        </form>
+
+        <div class="table-wrapper">
+            <table class="location-table">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Nama Lokasi</th>
+                        <th>Kategori</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                        <th>Tanggal Disimpan</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% if (locations.length > 0) { %>
+                        <% locations.forEach((location, index) => { %>
+                            <tr>
+                                <td><%= (currentPage - 1) * 5 + index + 1 %></td>
+
+                                <td>
+                                    <strong><%= location.location_name %></strong>
+                                    <small class="location-notes">
+                                        <%= location.notes || 'Tidak ada catatan' %>
+                                    </small>
+                                </td>
+
+                                <td>
+                                    <span class="category-label">
+                                        <%= location.category %>
+                                    </span>
+                                </td>
+
+                                <td><%= location.latitude %></td>
+                                <td><%= location.longitude %></td>
+
+                                <td>
+                                    <%= new Date(location.created_at).toLocaleDateString('id-ID') %>
+                                </td>
+
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="/edit/<%= location.id %>" class="btn-edit">
+                                            Edit
+                                        </a>
+
+                                        <form
+                                            action="/delete/<%= location.id %>"
+                                            method="POST"
+                                            onsubmit="return confirm('Yakin ingin menghapus lokasi ini?')"
+                                        >
+                                            <button type="submit" class="btn-delete">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="7" class="empty-table">
+                                Belum ada lokasi yang ditemukan.
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <% if (totalPages > 1) { %>
+            <div class="pagination">
+
+                <% if (currentPage > 1) { %>
+                    <a href="/?search=<%= encodeURIComponent(search) %>&category=<%= encodeURIComponent(category) %>&page=<%= currentPage - 1 %>">
+                        ← Sebelumnya
+                    </a>
+                <% } %>
+
+                <span>
+                    Halaman <strong><%= currentPage %></strong>
+                    dari <strong><%= totalPages %></strong>
+                </span>
+
+                <% if (currentPage < totalPages) { %>
+                    <a href="/?search=<%= encodeURIComponent(search) %>&category=<%= encodeURIComponent(category) %>&page=<%= currentPage + 1 %>">
+                        Berikutnya →
+                    </a>
+                <% } %>
+
+            </div>
+        <% } %>
+
+    </section>
+
+</main>
+
+<footer class="app-footer">
+    GeoTrack &copy; 2026 — Personal Location Manager
+</footer>
+
+</body>
+</html>
