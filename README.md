@@ -5,8 +5,8 @@
 ## 👨‍💻 Identitas Pengembang
 
 - **Nama:** I Gede Dika Mahendra Putra
-- **NIM:**42530027
-- **Kelas:**Pemrograman Web
+- **NIM:** 42530027
+- **Kelas:** Pemrograman Web
 - **Program Studi:** Teknologi Informasi
 - **Project:** GeoTrack – Personal Location Manager
 
