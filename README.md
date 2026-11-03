@@ -12,7 +12,7 @@
 
 ## 🎥 Video Demonstrasi
 
-Link YouTube: **[Masukkan URL video demonstrasi di sini]**
+Link YouTube: **https://youtu.be/JHlfLLVrGrE**
 
 ---
 
